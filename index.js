@@ -9,6 +9,7 @@ const customerRoutes = require("./src/routes/customerRoutes");
 const vehicleRoutes = require("./src/routes/vehicleRoutes");
 const { notFound, errorHandler } = require("./src/middleware/errorMidleware");
 const bookingRoutes = require("./src/routes/bookingRoutes");
+const userRoutes = require("./src/routes/userRoutes");
 // connect DB
 connectDB();
 
@@ -27,6 +28,7 @@ app.use(
 app.use("/api/customers", customerRoutes);
 app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/users", userRoutes);
 // health
 app.get("/", (req, res) => res.send("Motor Rental API running. See /api-docs"));
 
