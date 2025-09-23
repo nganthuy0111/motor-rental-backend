@@ -138,7 +138,7 @@ exports.deleteCustomer = async (req, res, next) => {
       throw new Error("Customer not found");
     }
 
-    // delete cloud images if exist
+    // 🗑️ Xóa ảnh Cloudinary nếu có
     if (customer.cccdImage?.public_id) {
       await cloudinary.uploader
         .destroy(customer.cccdImage.public_id)
@@ -150,7 +150,9 @@ exports.deleteCustomer = async (req, res, next) => {
         .catch(() => {});
     }
 
-    await customer.remove();
+    // 🗑️ Xóa document trong DB
+    await customer.deleteOne();
+
     res.json({ message: "Customer removed" });
   } catch (err) {
     next(err);
