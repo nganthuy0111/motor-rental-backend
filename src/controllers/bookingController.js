@@ -3,15 +3,25 @@ const Booking = require("../models/Booking");
 // Create booking
 exports.createBooking = async (req, res) => {
   try {
-    const { customer, vehicle, startDate, endDate, totalPrice } = req.body;
+    const { customer, vehicle, vehicles, startDate, endDate, totalPrice } =
+      req.body;
 
-    if (!customer || !vehicle || !startDate || !endDate || !totalPrice) {
-      return res.status(400).json({ error: "Missing required fields" });
+    // Normalize vehicles: accept either single 'vehicle' or array 'vehicles'
+    const vehiclesArray = Array.isArray(vehicles)
+      ? vehicles
+      : vehicle
+      ? [vehicle]
+      : [];
+
+    if (!customer || !startDate || !endDate || !totalPrice || vehiclesArray.length === 0) {
+      return res.status(400).json({
+        error: "Missing required fields (customer, vehicles/vehicle, startDate, endDate, totalPrice)",
+      });
     }
 
     const booking = new Booking({
       customer,
-      vehicle,
+      vehicles: vehiclesArray,
       startDate,
       endDate,
       totalPrice,
@@ -29,7 +39,7 @@ exports.getBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
       .populate("customer", "name phone")
-      .populate("vehicle", "licensePlate brand");
+      .populate("vehicles", "licensePlate brand");
     res.json(bookings);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -41,7 +51,7 @@ exports.getBookingById = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id)
       .populate("customer", "name phone")
-      .populate("vehicle", "licensePlate brand");
+      .populate("vehicles", "licensePlate brand");
     if (!booking) return res.status(404).json({ error: "Booking not found" });
     res.json(booking);
   } catch (error) {
@@ -52,7 +62,14 @@ exports.getBookingById = async (req, res) => {
 // Update booking
 exports.updateBooking = async (req, res) => {
   try {
-    const booking = await Booking.findByIdAndUpdate(req.params.id, req.body, {
+    // Normalize vehicle(s) if client sends single 'vehicle'
+    const update = { ...req.body };
+    if (update.vehicle && !update.vehicles) {
+      update.vehicles = [update.vehicle];
+      delete update.vehicle;
+    }
+
+    const booking = await Booking.findByIdAndUpdate(req.params.id, update, {
       new: true,
     });
     if (!booking) return res.status(404).json({ error: "Booking not found" });

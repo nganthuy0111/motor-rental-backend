@@ -59,7 +59,7 @@ router.get("/:id", getBookingById);
  *             type: object
  *             required:
  *               - customer
- *               - vehicle
+ *               - vehicles
  *               - startDate
  *               - endDate
  *               - totalPrice
@@ -67,9 +67,11 @@ router.get("/:id", getBookingById);
  *               customer:
  *                 type: string
  *                 description: Customer ID
- *               vehicle:
- *                 type: string
- *                 description: Vehicle ID
+ *               vehicles:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: List of Vehicle IDs
  *               startDate:
  *                 type: string
  *                 format: date
@@ -103,6 +105,11 @@ router.post("/", createBooking);
  *           schema:
  *             type: object
  *             properties:
+ *               vehicles:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: List of Vehicle IDs
  *               startDate:
  *                 type: string
  *                 format: date
