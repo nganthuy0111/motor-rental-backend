@@ -10,12 +10,16 @@ const vehicleRoutes = require("./src/routes/vehicleRoutes");
 const { notFound, errorHandler } = require("./src/middleware/errorMidleware");
 const bookingRoutes = require("./src/routes/bookingRoutes");
 const userRoutes = require("./src/routes/userRoutes");
+const activityLogRoutes = require("./src/routes/activityLogRoutes");
+const { activityContext } = require("./src/middleware/activityContext");
 // connect DB
 connectDB();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+// attach activity context for logging
+app.use(activityContext);
 
 // swagger
 app.use(
@@ -29,6 +33,7 @@ app.use("/api/customers", customerRoutes);
 app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/activity-logs", activityLogRoutes);
 // health
 app.get("/", (req, res) => res.send("Motor Rental API running. See /api-docs"));
 
