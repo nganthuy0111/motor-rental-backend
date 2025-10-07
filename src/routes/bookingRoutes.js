@@ -80,6 +80,9 @@ router.get("/:id", getBookingById);
  *                 format: date
  *               totalPrice:
  *                 type: number
+ *               color:
+ *                 type: string
+ *                 description: CSS color (HEX/RGB(A)/HSL(A)/named). Server normalizes to HEX/HEX8.
  *     responses:
  *       201:
  *         description: Booking created
@@ -121,6 +124,9 @@ router.post("/", createBooking);
  *               status:
  *                 type: string
  *                 enum: [pending, confirmed, cancelled, completed]
+ *               color:
+ *                 type: string
+ *                 description: CSS color (HEX/RGB(A)/HSL(A)/named). Server normalizes to HEX/HEX8.
  *     responses:
  *       200:
  *         description: Booking updated
